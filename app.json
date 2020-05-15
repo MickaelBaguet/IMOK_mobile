@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "imok_mobile",
+    "name": "ImOk Mobile",
     "slug": "imok_mobile",
     "platforms": [
       "ios",
@@ -9,10 +9,10 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/imok_logo.png",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "image": "./assets/imok_background.jpg",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "updates": {
