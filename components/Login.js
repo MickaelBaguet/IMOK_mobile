@@ -1,12 +1,14 @@
 import React from 'react'
-import {StyleSheet, View, Text, Image, TextInput, Button, TouchableOpacity, ImageBackground, Linking, Keyboard, TouchableWithoutFeedback} from 'react-native'
+import {StyleSheet, View, Text, Image, TextInput, Button, TouchableOpacity, ImageBackground, Linking, Keyboard, TouchableWithoutFeedback, ActivityIndicator} from 'react-native'
 import CheckBox from '@react-native-community/checkbox'
 import {colors, url} from '../config/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faLock, faEye, faEyeSlash, faUser, faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
 
+/**
+ * LOGIN VIEW
+ */
 export default class Login extends React.Component {
-
     constructor(props) {
         super(props)
         this.state = {
@@ -14,10 +16,12 @@ export default class Login extends React.Component {
             showPassword: false,
             loginInput: '',
             passwordInput: '',
-            loginError: false
+            loginError: false,
+            isLoading: false
         }
     }
 
+    /** DYNAMIC PASSWORD ICON (SHOW OR HIDE) */
     _displayShowPasswordIcon() {
         let icon = this.state.showPassword ? faEye : faEyeSlash
         return (
@@ -28,6 +32,7 @@ export default class Login extends React.Component {
         )
     }
 
+    /** HANDLE LOGIN ERROR DISPLAY */
     _displayLoginError() {
         return (
             <View style={styles.loginErrorContainer}>
@@ -37,19 +42,40 @@ export default class Login extends React.Component {
         )
     }
 
-    _loginSubmit() {
-        this.setState({loginError: !this.state.loginError})
+    /** CUSTOM LOADING */
+    _displayLoading() {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" />
+            </View>
+        )
     }
 
+    /**
+     * CALLED WHEN THE FORM IS SUBMITTED
+     */
+    _loginSubmit() {
+        Keyboard.dismiss()
+        this.setState({isLoading: true})
+        /** FAKE LOADING, TO BE REPLACED BY API LOGIN QUERY*/
+        setTimeout(() => {
+            this.setState({
+                isLoading: false,
+                loginError: true
+            })
+        }, 1000)
+    }
+
+    /**
+     * RENDER METHOD
+     */
     render () {
         return (
            <TouchableWithoutFeedback style={styles.mainContainer}
-                 onPress={()=>Keyboard.dismiss()}
-           >
+                 onPress={()=>Keyboard.dismiss()}>
                <ImageBackground
                    style={styles.background}
-                   source={require('../assets/imok_background_light.jpg')}
-               >
+                   source={require('../assets/imok_background_light.jpg')}>
                    <View style={styles.logoContainer}>
                        <Image source={require('../assets/imok_logo.png')} style={styles.logo} />
                        <Text style={styles.subtitle}>You're OK !</Text>
@@ -113,13 +139,16 @@ export default class Login extends React.Component {
                        </Text>
                    </View>
                    {this.state.loginError && this._displayLoginError()}
+                   {this.state.isLoading && this._displayLoading()}
                </ImageBackground>
            </TouchableWithoutFeedback>
         )
     }
 }
 
-
+/**
+ * STYLING
+ */
 const styles=StyleSheet.create({
     mainContainer: {
         flex: 1,
@@ -202,5 +231,14 @@ const styles=StyleSheet.create({
         fontSize: 20,
         paddingHorizontal: 40,
         textAlign: 'center',
+    },
+    loadingContainer: {
+        position: 'absolute',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        width: '100%',
+        height: '100%'
     }
 })
