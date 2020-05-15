@@ -127,6 +127,7 @@ export default class Login extends React.Component {
                                    Se souvenir de moi
                                </Text>
                            </View>
+                           {/** TODO: CHANGE TO TOUCHABLE_OPACITY COMPONENT FOR IOS STYLED BUTTON */}
                            <View style={styles.submitContainer}>
                                <Button
                                    title="Connexion"
@@ -225,6 +226,7 @@ const styles=StyleSheet.create({
         color: colors.link,
     },
     loginErrorContainer: {
+        width: '100%',
         position: 'absolute',
         bottom: 40,
         alignItems: 'center',
