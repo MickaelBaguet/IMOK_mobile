@@ -1,6 +1,5 @@
 import React from 'react'
-import {StyleSheet, View, Text, Image, TextInput, Button, TouchableOpacity, ImageBackground, Linking, Keyboard, TouchableWithoutFeedback, ActivityIndicator} from 'react-native'
-import CheckBox from '@react-native-community/checkbox'
+import {StyleSheet, View, Text, Image, TextInput, Button, TouchableOpacity, ImageBackground, Linking, Keyboard, TouchableWithoutFeedback, ActivityIndicator, Switch} from 'react-native'
 import {colors, url} from '../config/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faLock, faEye, faEyeSlash, faUser, faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
@@ -36,7 +35,7 @@ export default class Login extends React.Component {
     _displayLoginError() {
         return (
             <View style={styles.loginErrorContainer}>
-                <FontAwesomeIcon icon={faExclamationTriangle} size={30} color={colors.imok_danger} />
+                <FontAwesomeIcon icon={faExclamationTriangle} size={30} color={colors.danger} />
                 <Text style={styles.loginError}>Identifiant et/ou mot de passe incorrect(s)</Text>
             </View>
         )
@@ -114,20 +113,24 @@ export default class Login extends React.Component {
                        </View>
                        <View style={styles.loginBottomContainer}>
                            <View style={styles.checkboxContainer}>
-                               <CheckBox
-                                   value = {this.state.rememberMe}
+                               <Switch
+                                   value={this.state.rememberMe}
                                    onValueChange={() => { this.setState({rememberMe: !this.state.rememberMe}) }}
-                                   tintColors={{true: '#000', false: '#000'}}
-                                   tintColor= '#000'
-                                   onFillColor = '#000'
-                                   onCheckColor = 'transparent'
+                                   trackColor={{false: '#000', true: colors.link}}
+                                   thumbColor={this.state.rememberMe ? '#fff' : '#fff'}
                                />
-                               <Text style={styles.checkboxLabel}>Se souvenir de moi</Text>
+                               <Text
+                                   style={[
+                                       styles.checkboxLabel,
+                                       {color: this.state.rememberMe ? colors.link : '#000'}
+                                   ]}>
+                                   Se souvenir de moi
+                               </Text>
                            </View>
                            <View style={styles.submitContainer}>
                                <Button
                                    title="Connexion"
-                                   color={colors.imok_primary}
+                                   color={colors.primary}
                                    onPress = {() => {this._loginSubmit()}}
                                />
                            </View>
@@ -169,7 +172,7 @@ const styles=StyleSheet.create({
     subtitle: {
         fontSize: 30,
         fontWeight: 'bold',
-        color: colors.imok_primary,
+        color: colors.primary,
         fontStyle: 'italic',
         textTransform: 'uppercase'
     },
@@ -192,7 +195,7 @@ const styles=StyleSheet.create({
         marginVertical: 10,
     },
     errorBorders: {
-        borderColor: colors.imok_danger
+        borderColor: colors.danger
     },
     icon:{
         margin: 10
@@ -207,7 +210,7 @@ const styles=StyleSheet.create({
         justifyContent: 'space-between'
     },
     checkboxContainer: {
-        flex: 1,
+        flex: 3,
         flexDirection: 'row',
         alignItems: 'center'
     },
@@ -215,11 +218,11 @@ const styles=StyleSheet.create({
         fontWeight: 'bold',
     },
     submitContainer: {
-        flex: 1
+        flex: 2
     },
     lostPassword: {
         marginTop: 20,
-        color: colors.imok_link,
+        color: colors.link,
     },
     loginErrorContainer: {
         position: 'absolute',
@@ -227,7 +230,7 @@ const styles=StyleSheet.create({
         alignItems: 'center',
     },
     loginError: {
-        color: colors.imok_danger,
+        color: colors.danger,
         fontSize: 20,
         paddingHorizontal: 40,
         textAlign: 'center',
