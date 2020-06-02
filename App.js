@@ -1,12 +1,13 @@
 import React from 'react';
-import Login from './components/Login'
+import {Provider} from 'react-redux'
+import login from './store/store'
+import LoginHandler from "./components/LoginHandler";
 
-/**
- * APP ENTRY
- * TODO: REPLACE LOGIN BY NAVIGATION AND MAKE LOGIN ITS FIRST VIEW
- */
 export default function App() {
   return (
-      <Login />
-  );
+      <Provider store={login}>
+        <LoginHandler/>
+      </Provider>
+  )
 }
+

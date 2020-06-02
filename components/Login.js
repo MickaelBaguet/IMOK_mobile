@@ -1,13 +1,16 @@
 import React from 'react'
 import {StyleSheet, View, Text, Image, TextInput, Button, TouchableOpacity, ImageBackground, Linking, Keyboard, TouchableWithoutFeedback, ActivityIndicator, Switch} from 'react-native'
-import {colors, url} from '../config/constants'
+import {colors, url, api} from '../config/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faLock, faEye, faEyeSlash, faUser, faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
+import {connect} from 'react-redux'
+import AsyncStorage from "@react-native-community/async-storage";
+import * as Keychain from 'react-native-keychain'
 
 /**
  * LOGIN VIEW
  */
-export default class Login extends React.Component {
+class Login extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -16,8 +19,36 @@ export default class Login extends React.Component {
             loginInput: '',
             passwordInput: '',
             loginError: false,
-            isLoading: false
+            isLoading: true
         }
+    }
+
+    componentDidMount() {
+        this._getLocalCredentials()
+            .then((credentials) => {
+                if(credentials) {
+                    credentials = JSON.parse(credentials)
+                    this.setState({
+                        loginInput: credentials.login,
+                        passwordInput: credentials.password,
+                    }, () => {
+                        this._loginSubmit(true)
+                    })
+                }
+                this.setState({isLoading: false})
+            })
+    }
+
+    _setLocalCredentials = async (credentials) => {
+        return AsyncStorage.setItem('credentials', credentials)
+    }
+
+    _getLocalCredentials = async () => {
+        return await AsyncStorage.getItem('credentials')
+    }
+
+    _removeLocalCredentials = async () => {
+        return AsyncStorage.removeItem('credentials')
     }
 
     /** DYNAMIC PASSWORD ICON (SHOW OR HIDE) */
@@ -53,16 +84,42 @@ export default class Login extends React.Component {
     /**
      * CALLED WHEN THE FORM IS SUBMITTED
      */
-    _loginSubmit() {
+    _loginSubmit(autoLogin = false) {
         Keyboard.dismiss()
         this.setState({isLoading: true})
-        /** FAKE LOADING, TO BE REPLACED BY API LOGIN QUERY*/
-        setTimeout(() => {
-            this.setState({
-                isLoading: false,
-                loginError: true
-            })
-        }, 1000)
+
+        /** CONNECT TO THE API TO RETRIEVE TOKEN */
+        fetch(api.login, {
+            method: 'POST',
+            headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+            body: JSON.stringify({mail : this.state.loginInput, password : this.state.passwordInput})
+        })
+        .then((response) => {
+            /** CONNEXION SUCCESS */
+            if (response.status === 200) {
+                response.json().then((response) => {
+                    /** SEND TOKEN TO REDUX STORE */
+                    this.props.dispatch({
+                        type: 'login',
+                        value: response.access_token
+                    })
+                    /** END LOADING STATE */
+                    this.setState({isLoading: false, loginError: false})
+                    /** USER WANTS TO STORE CREDENTIALS */
+                    if (this.state.rememberMe || autoLogin) {
+                        this._setLocalCredentials(JSON.stringify({
+                            login: this.state.loginInput,
+                            password: this.state.passwordInput
+                        }))
+                    } else {
+                        this._removeLocalCredentials()
+                    }
+                })
+            /** CONNECTION FAILURE */
+            } else (
+                this.setState({isLoading: false, loginError: true})
+            )
+        })
     }
 
     /**
@@ -90,6 +147,7 @@ export default class Login extends React.Component {
                                 style={styles.input}
                                 placeholder="Identifiant"
                                 multiLine = {false}
+                                onChangeText={(loginInput) => {this.setState({loginInput})}}
                                 onFocus={()=>{this.setState({loginError: false})}}
                                 onSubmitEditing = {() =>this.PasswordInput.focus()}
                             />
@@ -106,6 +164,7 @@ export default class Login extends React.Component {
                                placeholder="Mot de passe"
                                multiLine = {false}
                                secureTextEntry = {!this.state.showPassword}
+                               onChangeText={(passwordInput) => {this.setState({passwordInput})}}
                                onFocus={()=>{this.setState({loginError: false})}}
                                onSubmitEditing = {() => {this._loginSubmit()}}
                            />
@@ -149,6 +208,13 @@ export default class Login extends React.Component {
         )
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        auth_token: state.auth_token
+    }
+}
+export default connect(mapStateToProps)(Login)
 
 /**
  * STYLING
@@ -196,7 +262,8 @@ const styles=StyleSheet.create({
         marginVertical: 10,
     },
     errorBorders: {
-        borderColor: colors.danger
+        borderColor: colors.danger,
+        borderWidth: 2
     },
     icon:{
         margin: 10

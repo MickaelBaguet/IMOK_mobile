@@ -6,6 +6,13 @@ export const url = {
 }
 
 /**
+* API ROUTES
+*/
+export const api =  {
+    login : 'http://172.17.0.6:8000/api/auth/login'
+}
+
+/**
  * STYLING COLORS ARE STORED HERE
  * NO BAD TASTE ALLOWED
  */
