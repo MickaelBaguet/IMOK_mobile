@@ -66,6 +66,10 @@ export default class Login extends React.Component {
         }, 1000)
     }
 
+    _goHome() {
+        this.props.navigation.navigate('Home')
+    }
+
     /**
      * RENDER METHOD
      */
@@ -128,7 +132,8 @@ export default class Login extends React.Component {
                                <Button
                                    title="Connexion"
                                    color={colors.imok_primary}
-                                   onPress = {() => {this._loginSubmit()}}
+                                   // onPress = {() => {this._loginSubmit()}}
+                                   onPress = {() => {this._goHome()}}
                                />
                            </View>
                        </View>
