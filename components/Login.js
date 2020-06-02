@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faLock, faEye, faEyeSlash, faUser, faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
 import {connect} from 'react-redux'
 import AsyncStorage from "@react-native-community/async-storage";
-import * as Keychain from 'react-native-keychain'
 
 /**
  * LOGIN VIEW
