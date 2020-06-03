@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {faBell, faCalendarAlt, faHome, faUser, faUsers} from "@fortawesome/free-solid-svg-icons";
 
 import Estate from "./Estate";
-import Client from "./Client";
+import Client from "./CustomerSearch";
 import Appointment from "./Appointment";
 
 

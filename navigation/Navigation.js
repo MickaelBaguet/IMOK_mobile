@@ -9,8 +9,9 @@ import {faCalendarAlt, faHome, faUsers} from "@fortawesome/free-solid-svg-icons"
 import Logout from "../components/Logout";
 /** IMPORT VIEWS HERE */
 import Appointment from "../components/Appointment";
-import Client from "../components/Client";
+import CustomerSearch from "../components/CustomerSearch";
 import Estate from '../components/Estate'
+import CustomerDetails from "../components/CustomerDetails";
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -42,7 +43,10 @@ const CustomerStack = () => (
     <Stack.Navigator screenOptions={screenOptions}>
         <Stack.Screen
             name = 'Rechercher un client'
-            component = {Client}/>
+            component = {CustomerSearch}/>
+        <Stack.Screen
+            name = 'Détails du client'
+            component = {CustomerDetails}/>
         {/* ADD MORE STACK SCREENS HERE*/}
     </Stack.Navigator>
 )
