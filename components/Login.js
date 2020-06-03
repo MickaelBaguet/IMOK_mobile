@@ -1,6 +1,6 @@
 import React from 'react'
 import {StyleSheet, View, Text, Image, TextInput, Button, TouchableOpacity, ImageBackground, Linking, Keyboard, TouchableWithoutFeedback, ActivityIndicator, Switch} from 'react-native'
-import {colors, url, api} from '../config/constants'
+import {colors, url, API} from '../config/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faLock, faEye, faEyeSlash, faUser, faExclamationTriangle} from '@fortawesome/free-solid-svg-icons'
 import {connect} from 'react-redux'
@@ -88,7 +88,7 @@ class Login extends React.Component {
         this.setState({isLoading: true})
 
         /** CONNECT TO THE API TO RETRIEVE TOKEN */
-        fetch(api.login, {
+        fetch(API.login, {
             method: 'POST',
             headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
             body: JSON.stringify({mail : this.state.loginInput, password : this.state.passwordInput})

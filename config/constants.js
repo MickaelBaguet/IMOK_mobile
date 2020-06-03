@@ -8,8 +8,10 @@ export const url = {
 /**
 * API ROUTES
 */
-export const api =  {
-    login : 'http://172.17.0.6:8000/api/auth/login'
+const api_base_url = 'http://172.17.0.6:8000/api/'
+export const API =  {
+    login : api_base_url + 'auth/login',
+    logout : api_base_url + 'auth/logout'
 }
 
 /**

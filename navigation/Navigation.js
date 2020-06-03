@@ -1,5 +1,4 @@
 import React from 'react'
-import {TouchableOpacity, Text} from 'react-native'
 import 'react-native-gesture-handler';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
@@ -7,6 +6,7 @@ import {createStackNavigator} from "@react-navigation/stack";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {colors} from "../config/constants";
 import {faCalendarAlt, faHome, faUsers} from "@fortawesome/free-solid-svg-icons";
+import Logout from "../components/Logout";
 /** IMPORT VIEWS HERE */
 import Appointment from "../components/Appointment";
 import Client from "../components/Client";
@@ -23,12 +23,7 @@ const Tab = createBottomTabNavigator()
  * =====================
  */
 const screenOptions = {
-    headerRight: () => (
-        <TouchableOpacity >
-            {/*TODO: REPLACE WITH LOGOUT COMPONENT*/}
-            <Text style={{marginRight: 10}}>Logout</Text>
-        </TouchableOpacity>
-    )
+    headerRight: () => (<Logout/>)
 }
 /** ===================
  * APPOINTMENT STACK */

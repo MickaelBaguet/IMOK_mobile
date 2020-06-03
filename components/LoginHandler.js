@@ -1,7 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import Login from "./Login"
-import FakeHome from "./FakeHome"
 import Navigation from "../navigation/Navigation";
 
 class LoginHandler extends React.Component {
@@ -17,7 +16,7 @@ class LoginHandler extends React.Component {
         return (
             this.props.auth_token
             ? <Navigation/>
-            : <Navigation/>
+            : <Login/>
         )
     }
 }
