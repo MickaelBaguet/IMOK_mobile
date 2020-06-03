@@ -8,7 +8,8 @@ export const url = {
 /**
 * API ROUTES
 */
-const api_base_url = 'http://172.17.0.6:8000/api/'
+//const api_base_url = 'http://172.17.0.6:8000/api/'
+const api_base_url = 'http://imok.am.manusien-ecolelamanu.fr/current/public/api/'
 export const API =  {
     login : api_base_url + 'auth/login',
     logout : api_base_url + 'auth/logout',
