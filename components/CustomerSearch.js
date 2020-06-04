@@ -1,5 +1,5 @@
 import React from 'react'
-import {Text, View, StyleSheet, FlatList, TouchableOpacity, Linking, ActivityIndicator} from 'react-native'
+import {Text, TextInput, View, StyleSheet, FlatList, TouchableOpacity, Linking, ActivityIndicator} from 'react-native'
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {faEnvelope, faPhone} from "@fortawesome/free-solid-svg-icons";
 import {API, colors, fakeCustomers} from "../config/constants";
@@ -50,6 +50,7 @@ class CustomerSearch extends React.Component {
         return (
             <View style={styles.container}>
                 <View style={styles.searchContainer}>
+                    <TextInput/>
                     <TouchableOpacity onPress={()=> this._loadCustomers()}>
                         <View style={styles.button}>
                             <Text>Rechercher</Text>

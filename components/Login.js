@@ -10,7 +10,6 @@ import AsyncStorage from "@react-native-community/async-storage";
  * LOGIN VIEW
  */
 class Login extends React.Component {
-    _isMounted = false
 
     constructor(props) {
         super(props)
@@ -25,27 +24,19 @@ class Login extends React.Component {
     }
 
     componentDidMount() {
-        this._isMounted = true
-
-        if(this._isMounted) {
-            this._getLocalCredentials()
-                .then((credentials) => {
-                    if(credentials) {
-                        credentials = JSON.parse(credentials)
-                        this.setState({
-                            loginInput: credentials.login,
-                            passwordInput: credentials.password,
-                        }, () => {
-                            this._loginSubmit(true)
-                        })
-                    }
-                    this.setState({isLoading: false})
-                })
-        }
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
+        this._getLocalCredentials()
+            .then((credentials) => {
+                if(credentials) {
+                    credentials = JSON.parse(credentials)
+                    this.setState({
+                        loginInput: credentials.login,
+                        passwordInput: credentials.password,
+                    }, () => {
+                        this._loginSubmit(true)
+                    })
+                }
+                this.setState({isLoading: false})
+            })
     }
 
     _setLocalCredentials = async (credentials) => {
