@@ -15,6 +15,8 @@ export const API =  {
     logout : api_base_url + 'auth/logout',
     customers: api_base_url + 'customers',
     customer_id: api_base_url + 'customers/',
+    estateSearch : api_base_url + 'estates/attr/arg',
+    estateList : api_base_url + 'estates'
 }
 
 /**
