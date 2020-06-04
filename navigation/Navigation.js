@@ -11,6 +11,7 @@ import Logout from "../components/Logout";
 import Appointment from "../components/Appointment";
 import Client from "../components/Client";
 import Estate from '../components/Estate'
+import AppointmentCreate from '../components/AppointmentCreate'
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -32,6 +33,9 @@ const AppointmentStack = () => (
         <Stack.Screen
             name = 'Mes RDV'
             component = {Appointment}/>
+        <Stack.Screen
+            name = 'Ajouter un RDV'
+            component = {AppointmentCreate}/>
         {/* ADD MORE STACK SCREENS HERE*/}
     </Stack.Navigator>
 )
