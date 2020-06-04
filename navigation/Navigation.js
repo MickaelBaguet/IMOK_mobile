@@ -10,7 +10,7 @@ import Logout from "../components/Logout";
 /** IMPORT VIEWS HERE */
 import Appointment from "../components/Appointment";
 import Client from "../components/Client";
-import Estate from '../components/Estate'
+import EstateSearch from '../components/EstateSearch'
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -53,7 +53,7 @@ const EstateStack = () => (
     <Stack.Navigator screenOptions={screenOptions}>
         <Stack.Screen
             name = 'Rechercher un bien'
-            component = {Estate}/>
+            component = {EstateSearch}/>
         {/* ADD MORE STACK SCREENS HERE*/}
     </Stack.Navigator>
 )

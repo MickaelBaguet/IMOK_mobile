@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {faBell, faCalendarAlt, faHome, faUser, faUsers} from "@fortawesome/free-solid-svg-icons";
 
-import Estate from "./Estate";
+import EstateSearch from "./EstateSearch";
 import Client from "./Client";
 import Appointment from "./Appointment";
 
@@ -38,8 +38,8 @@ function MyTabs() {
                 }}
             />
             <Tab.Screen
-                name="Estate"
-                component={Estate}
+                name="EstateSearch"
+                component={EstateSearch}
                 options={{
                     tabBarLabel: 'Biens',
                     tabBarIcon: ({ color, size }) => (
