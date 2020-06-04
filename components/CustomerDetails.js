@@ -17,7 +17,7 @@ class CustomerDetails extends React.Component {
     componentDidMount() {
         const customerID = this.props.route.params.customerID
         //1 FETCH USER WITH ITS ID
-        fetch(API.customer_id + customerID, {
+        fetch(API.customers + customerID, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
