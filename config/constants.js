@@ -1,3 +1,5 @@
+import Appointment from "../components/Appointment"
+
 /**
  * EXTERNAL URL ARE STORED HERE
  */
@@ -16,7 +18,8 @@ export const API =  {
     customers: api_base_url + 'customers',
     customer_id: api_base_url + 'customers/',
     estateSearch : api_base_url + 'estates/attr/arg',
-    estateList : api_base_url + 'estates'
+    estateList : api_base_url + 'estates',
+    appointments : api_base_url + 'appointments'
 }
 
 /**
