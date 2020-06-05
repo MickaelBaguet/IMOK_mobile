@@ -61,7 +61,7 @@ class CustomerSearch extends React.Component {
             renderItem={({item}) => (
                 <TouchableOpacity
                     onPress={()=>{
-                        this.props.navigation.navigate('Détails du client', {customerID: item.id.toString()} )
+                        this.props.navigation.navigate('Détails du client', {customer: JSON.stringify(item)} )
                     }}>
                     <View style={styles.customerCard}>
                         <View style={styles.customerInfo}>

@@ -13,6 +13,7 @@ import CustomerSearch from "../components/CustomerSearch";
 import AppointmentCreate from '../components/AppointmentCreate'
 import CustomerDetails from "../components/CustomerDetails";
 import EstateSearch from '../components/EstateSearch'
+import AppointmentDetails from "../components/AppointmentDetails";
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -37,6 +38,9 @@ const AppointmentStack = () => (
         <Stack.Screen
             name = 'Ajouter un RDV'
             component = {AppointmentCreate}/>
+        <Stack.Screen
+            name = 'Details du RDV'
+            component = {AppointmentDetails}/>
         {/* ADD MORE STACK SCREENS HERE*/}
     </Stack.Navigator>
 )
@@ -51,6 +55,9 @@ const CustomerStack = () => (
         <Stack.Screen
             name = 'Détails du client'
             component = {CustomerDetails}/>
+        <Stack.Screen
+            name = 'Details du RDV'
+            component = {AppointmentDetails}/>
         {/* ADD MORE STACK SCREENS HERE*/}
     </Stack.Navigator>
 )

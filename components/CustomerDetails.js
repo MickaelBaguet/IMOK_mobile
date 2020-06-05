@@ -1,16 +1,9 @@
 import React from 'react';
-import {ActivityIndicator, StyleSheet, Text, View, ScrollView, TouchableOpacity, Linking} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View, TouchableOpacity, Linking, FlatList} from 'react-native';
 import {API} from "../config/constants";
 import {connect} from "react-redux";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {
-    faEnvelope,
-    faLocationArrow,
-    faMapMarked,
-    faMapMarkedAlt, faMapMarkerAlt, faPhone, faPhoneAlt,
-    faSearchLocation,
-    faUser
-} from "@fortawesome/free-solid-svg-icons";
+import {faEnvelope, faMapMarkerAlt, faPhone} from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 
 class CustomerDetails extends React.Component {
@@ -18,14 +11,14 @@ class CustomerDetails extends React.Component {
         super(props);
         this.state = {
             isLoading: true,
-            customer: undefined
+            customer: undefined,
+            appointments: []
         }
+        this.customer = JSON.parse(this.props.route.params.customer)
     }
 
     componentDidMount() {
-        const customerID = this.props.route.params.customerID
-        //1 FETCH USER WITH ITS ID
-        fetch(API.customers + customerID, {
+        fetch(API.appointmentsCustomer + this.customer.id, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -33,11 +26,11 @@ class CustomerDetails extends React.Component {
                 'Authorization': 'Bearer ' + this.props.auth_token,
             }
         })
-        .then((response) => {
-            if (response.status === 200) {
-                response.json().then((response)=> {
+        .then((response)=> {
+            if(response.status === 200) {
+                response.json().then((data) => {
                     this.setState({
-                        customer: response.customer,
+                        appointments: data.appointments,
                         isLoading: false
                     })
                 })
@@ -54,51 +47,85 @@ class CustomerDetails extends React.Component {
         )
     }
 
-    render() {
-        const customer = this.state.customer
-        console.log('customer',customer)
-
-        return (
-            <ScrollView style={styles.container}>
-                {this.state.isLoading && this._displayLoading()}
-                {customer && (
-                    <View style={styles.profile}>
-                        <View style={styles.profile_left}>
-                            <Text style={styles.title}>
-                                {customer.civility === '0' ? 'M. ' : 'Mme '}
-                                {customer.lastname + ' '}
-                                {customer.firstname}
-                            </Text>
-                            <Text>
-                                {customer.marital_status + ', '}
-                                {'né(e) le' + moment(new Date(customer.birthdate)).format('DD/MM/YYYY')}
-                            </Text>
-                            <View style={styles.profile_row}>
-                                <View style={styles.profileIcon}>
-                                    <FontAwesomeIcon icon={faMapMarkerAlt} size={30}/>
+    _displayAppointments() {
+        const appointments = this.state.appointments
+        if(appointments.length > 0) {
+            return (
+                <FlatList
+                    data={appointments}
+                    keyExtractor={(item) => (item.date_start + item.id_customers + item.id_employees)}
+                    renderItem={({item}) => (
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.props.navigation.navigate('Details du RDV', {appointment: JSON.stringify(item)})
+                            }}>
+                            <View style={styles.appointmentCard}>
+                                <View style={styles.appointmentDate}>
+                                    <Text style={styles.label}>Date du RDV</Text>
+                                    <Text>{'le ' + moment(item.date_start).format('DD/MM/YYYY à HH:mm')}</Text>
                                 </View>
-                                <View style={styles.profileData}>
-                                    <Text>
-                                        {customer.street}
-                                        {customer.complement && '\n'+customer.complement}
-                                    </Text>
-                                    <Text>{customer.zip_code + ' ' + customer.city}</Text>
+                                <View style={styles.appointmentEmployee}>
+                                    <Text style={styles.label}>Avec:</Text>
+                                    <Text>{item.employee_firstname + ' ' + item.employee_lastname}</Text>
                                 </View>
                             </View>
-                        </View>
-                        <View style={styles.profile_right}>
-                            <TouchableOpacity
-                                onPress={() => Linking.openURL('mailto:' + customer.mail)}>
-                                <FontAwesomeIcon icon={faEnvelope} size={30}/>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => Linking.openURL('tel:' + customer.phone)}>
-                                <FontAwesomeIcon icon={faPhone} size={30}/>
-                            </TouchableOpacity>
+                        </TouchableOpacity>
+                    )}
+                />
+            )
+        } else {
+            return (
+                <Text style={[{margin: 10}]}>Ce client n'a aucun RDV</Text>
+            )
+        }
+    }
+
+    render() {
+        const customer = this.customer
+
+        return (
+            <View style={styles.container}>
+                {this.state.isLoading && this._displayLoading()}
+                <View style={styles.profile}>
+                    <View style={styles.profile_left}>
+                        <Text style={styles.title}>
+                            {customer.civility === '0' ? 'M. ' : 'Mme '}
+                            {customer.lastname + ' '}
+                            {customer.firstname}
+                        </Text>
+                        <Text style={{fontStyle: 'italic'}}>
+                            {customer.marital_status + ', '}
+                            {'né(e) le ' + moment(new Date(customer.birthdate)).format('DD/MM/YYYY')}
+                        </Text>
+                        <View style={styles.profile_row}>
+                            <View style={styles.profileIcon}>
+                                <FontAwesomeIcon icon={faMapMarkerAlt} size={30}/>
+                            </View>
+                            <View style={styles.profileData}>
+                                <Text>
+                                    {customer.street}
+                                    {customer.complement && '\n'+customer.complement}
+                                </Text>
+                                <Text>{customer.zip_code + ' ' + customer.city}</Text>
+                            </View>
                         </View>
                     </View>
-                )}
-            </ScrollView>
+                    <View style={styles.profile_right}>
+                        <TouchableOpacity
+                            onPress={() => Linking.openURL('mailto:' + customer.mail)}>
+                            <FontAwesomeIcon icon={faEnvelope} size={30}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => Linking.openURL('tel:' + customer.phone)}>
+                            <FontAwesomeIcon icon={faPhone} size={30}/>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={styles.appointments}>
+                    <Text style={[styles.title, {margin: 10}]}>RDV du client</Text>
+                    {this._displayAppointments()}
+                </View>
+            </View>
         )
     }
 }
@@ -144,10 +171,6 @@ const styles=StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center'
     },
-    label: {
-        width: 100,
-        fontWeight: 'bold'
-    },
     profile_row: {
         flexDirection: 'row',
         marginTop: 10
@@ -158,5 +181,27 @@ const styles=StyleSheet.create({
     },
     profileData: {
         flex: 1
+    },
+    appointments: {
+        flex: 4
+    },
+    appointmentCard: {
+        backgroundColor: '#fff',
+        marginVertical: 4,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        borderRadius: 2,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    appointmentDate: {
+        flex: 5
+    },
+    appointmentEmployee: {
+        flex: 2
+    },
+    label: {
+        fontWeight: 'bold'
     }
 })

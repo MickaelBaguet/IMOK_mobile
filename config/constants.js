@@ -19,7 +19,9 @@ export const API =  {
     customersFind: api_base_url + 'customers/find/',
     estateSearch : api_base_url + 'estates/attr/arg',
     estateList : api_base_url + 'estates',
-    appointments : api_base_url + 'appointments'
+    appointments : api_base_url + 'appointments',
+    appointmentsCustomer : api_base_url + 'appointments/customer/',
+    appointmentsEmployee : api_base_url + 'appointments/employee/',
 }
 
 /**

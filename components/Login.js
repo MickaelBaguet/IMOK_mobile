@@ -101,7 +101,7 @@ class Login extends React.Component {
                     /** SEND TOKEN TO REDUX STORE */
                     this.props.dispatch({
                         type: 'login',
-                        value: response.access_token
+                        value: {token: response.access_token, user: response.user}
                     })
                     /** END LOADING STATE */
                     this.setState({isLoading: false, loginError: false})
