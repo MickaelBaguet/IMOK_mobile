@@ -1,48 +1,122 @@
 import React, { Component, Fragment } from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity,FlatList } from 'react-native';
 import { ListItem, Button } from 'react-native-elements'
-import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
+import {faEnvelope, faPhone} from "@fortawesome/free-solid-svg-icons";
+import {Calendar, CalendarList, Agenda, LocaleConfig} from 'react-native-calendars';
+import {API, colors} from "../config/constants";
+import {connect} from "react-redux";
 
 class Appointment extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+        appointments: [],
+        isLoading: false
+    }
+}
+
+  _loadAppointment = () => {
+    this.setState({isLoading: true})
+    fetch(API.appointments, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + this.props.auth_token,
+        }
+    })
+    .then((response) => {
+        if (response.status === 200) {
+           response.json().then((data)=> {
+               this.setState({
+                appointments: data.appointments
+               })
+              // console.log(data);
+           })
+        }
+        this.setState({
+            isLoading: false
+        })
+    })
+}
+
     render() {
-        console.log(this.props);
-        const list = [
-            {
-              name: 'Sébastien Hinard',
-              subtitle: '14/06/2020 - 14h00'
-            },
-            {
-              name: 'Felix Romain',
-              subtitle: '26/01/2021 - 10h00'
-            },
-          ]
+
+      // console.log(this.state.appointments);
+
+          LocaleConfig.locales['fr'] = {
+            monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
+            monthNamesShort: ['Janv.','Févr.','Mars','Avril','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'],
+            dayNames: ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
+            dayNamesShort: ['Dim.','Lun.','Mar.','Mer.','Jeu.','Ven.','Sam.'],
+            today: 'Aujourd\'hui'
+          };
+          LocaleConfig.defaultLocale = 'fr';
         return (              
               <View>
                   <ScrollView style={style.scrollView}>
-                <Calendar style={style.calendar}
-                // Collection of dates that have to be marked. Default = {}
-                markedDates={{
-                    '2012-05-16': {selected: true, marked: true, selectedColor: 'blue'},
-                    '2012-05-17': {marked: true},
-                    '2012-05-18': {marked: true, dotColor: 'red', activeOpacity: 0},
-                    '2012-05-19': {disabled: true, disableTouchEvent: true}
-                }}
-                />
+
+                  <TouchableOpacity onPress={()=> this._loadAppointment()}>
+                        <View style={style.button}>
+                            <Text>Rechercher</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                  <Calendar
+                    markedDates={{
+                      '2017-12-14': {
+                        periods: [
+                          {startingDay: false, endingDay: true, color: '#5f9ea0'},
+                          {startingDay: false, endingDay: true, color: '#ffa500'},
+                          {startingDay: true, endingDay: false, color: '#f0e68c'}
+                        ]
+                      },
+                      '2017-12-15': {
+                        periods: [
+                          {startingDay: true, endingDay: false, color: '#ffa500'},
+                          {color: 'transparent'},
+                          {startingDay: false, endingDay: false, color: '#f0e68c'}
+                        ]
+                      }
+                    }}
+                    // Date marking style [simple/period/multi-dot/custom]. Default = 'simple'
+                    markingType='multi-period'
+                  />
 
                 <Text style={style.title}>Les RDV à venir</Text>
                   
-                {
-                  list.map((l, i) => (
-                    <ListItem
-                      key={i}
-                      title={l.name}
-                      subtitle={l.subtitle}
-
-                      bottomDivider
-                    />
-                  ))
-                }
+                <FlatList
+                    data={this.state.appointments}
+                    // keyExtractor={(item) => item.id.toString()}
+                    renderItem={({item}) => (
+                            <View style={style.customerCard}>
+                                <View style={style.customerInfo}>
+                                    <View style={style.row}>
+                                        <Text style={style.customerName}>{item.date_start}</Text>
+                                        <Text style={style.customerName}>{item.id_customers}</Text>
+                                    </View>
+                                    <View style={style.row}>
+                                        <Text style={style.customerAddress}>80000</Text>
+                                        <Text style={style.customerAddress}>Amiens</Text>
+                                    </View>
+                                </View>
+                                <View style={style.contact}>
+                                    <TouchableOpacity onPress={()=> {Linking.openURL(`mailto:${item.note}`)}}>
+                                        <View>
+                                            <FontAwesomeIcon icon={faEnvelope} size={20} color={colors.primary} style={style.icon}/>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={()=> {Linking.openURL(`tel:${item.note}`)}}>
+                                        <View>
+                                            <FontAwesomeIcon icon={faPhone} size={16} color={colors.primary} style={style.icon}/>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                    )}
+                />
 
                 <Button style={style.button}
                     title="Ajouter un rdv"
@@ -53,6 +127,13 @@ class Appointment extends React.Component {
         )
     }
 }
+
+const mapStateToProps = (state) => {
+  return {
+      auth_token: state.auth_token
+  }
+}
+export default connect(mapStateToProps)(Appointment)
 
 const style = StyleSheet.create({
     title: {
@@ -67,6 +148,36 @@ const style = StyleSheet.create({
     button: {
         margin: 20, 
     },
+    container: {
+      flex: 1,
+  },
+  customerCard: {
+      marginVertical: 2,
+      backgroundColor: '#fff',
+      padding: 10,
+      flexDirection: 'row'
+  },
+  row: {
+      flexDirection: 'row'
+  },
+  customerName: {
+      marginRight: 2,
+      textTransform: 'capitalize',
+      fontWeight: 'bold'
+  },
+  customerAddress: {
+      marginRight: 2,
+  },
+  customerInfo: {
+      flex: 1
+  },
+  contact: {
+      flex:1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+  },
+  icon: {
+      marginRight: 10
+  }
 })
-
-export default Appointment
