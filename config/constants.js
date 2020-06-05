@@ -1,5 +1,3 @@
-import Appointment from "../components/Appointment"
-
 /**
  * EXTERNAL URL ARE STORED HERE
  */
@@ -15,6 +13,8 @@ const api_base_url = 'http://imok.am.manusien-ecolelamanu.fr/current/public/api/
 export const API =  {
     login : api_base_url + 'auth/login',
     logout : api_base_url + 'auth/logout',
+    customer_id: api_base_url + 'customers/',
+    citiesSearch: api_base_url + 'cities/search/',
     customers: api_base_url + 'customers/',
     customersFind: api_base_url + 'customers/find/',
     estateSearch : api_base_url + 'estates/attr/arg',

@@ -14,6 +14,9 @@ import AppointmentCreate from '../components/AppointmentCreate'
 import CustomerDetails from "../components/CustomerDetails";
 import EstateSearch from '../components/EstateSearch'
 import AppointmentDetails from "../components/AppointmentDetails";
+import EstateList from "../components/EstateList";
+import EstateDetails from "../components/EstateDetails";
+import EstateCreate from "../components/EstateCreate";
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -69,7 +72,16 @@ const EstateStack = () => (
         <Stack.Screen
             name = 'Rechercher un bien'
             component = {EstateSearch}/>
-        {/* ADD MORE STACK SCREENS HERE*/}
+        <Stack.Screen
+            name = 'Résultat recherche'
+            component = {EstateList}/>
+        <Stack.Screen
+            name = 'Détails bien'
+            component = { EstateDetails }/>
+        <Stack.Screen
+            name = 'Création bien'
+            component = { EstateCreate }/>
+        {/* ADD MORE STACK SCREENS HERE */}
     </Stack.Navigator>
 )
 

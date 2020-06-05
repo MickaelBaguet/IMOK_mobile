@@ -10,45 +10,49 @@ import {connect} from "react-redux";
 
 class EstateSearch extends React.Component {
 
-    _searchEstates() {
-        fetch(API.estateSearch, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + this.props.auth_token,
-            },
-            // body: JSON.stringify({
-                // city:       this.values.city,
-                // minPrice:   this.values.minPrice,
-                // maxPrice:   this.values.maxPrice,
-                // minSize:    this.values.minSize,
-                // maxSize:    this.values.maxPrice
-            // })
-        })
-        .then((response) =>
-            response.json()
-        )
-        .then((response) => {
-            console.log(response)
-        })
+    constructor(props) {
+        super(props)
+        this.state = {
+            estate: [],
+            isLoading: false,
+            city: '',
+            minPrice: '',
+            maxPrice: '',
+            minSize: '',
+            maxSize: '',
+        }
     }
 
-    _getAllEstates() {
-        fetch(API.estateList, {
-            method: 'GET',
+    _searchEstates(values) {
+        fetch(API.estateSearch, {
+            method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + this.props.auth_token,
             },
-        })
-            .then((response) =>
-                response.json()
-            )
-            .then((response) => {
-                console.log(response)
+            body: JSON.stringify({
+                city:       values.city,
+                minPrice:   values.minPrice,
+                maxPrice:   values.maxPrice,
+                minSize:    values.minSize,
+                maxSize:    values.maxPrice
             })
+        })
+            .then((response) => {
+            if (response.status === 200) {
+                response.json().then((data)=> {
+                    // this.setState({
+                    //     estate: data.estate
+                    // })
+                    this.props.navigation.navigate('Résultat recherche', { estatesList: data.estate })
+                    // console.log(data)
+                })
+            }
+            this.setState({
+                isLoading: false
+            })
+        })
     }
 
     render() {
@@ -56,7 +60,7 @@ class EstateSearch extends React.Component {
             <Formik
                 initialValues={{ city: '', minPrice: '', maxPrice: '', minSize: '', maxSize: '' }}
                 // onSubmit={values => Alert.alert(JSON.stringify(values))}
-                onSubmit={ this._searchEstates() }
+                onSubmit={ values => this._searchEstates(values) }
                 validationSchema={yup.object().shape({
                     city:       yup.string().required(),
                     minPrice:   yup.number().positive().integer(),
@@ -138,10 +142,10 @@ class EstateSearch extends React.Component {
                             />
                             <Button
                                 type='clear'
-                                title='All Estates'
-                                buttonStyle={{ borderColor: '#F57C00', borderRadius: 20, borderWidth: 1.5 }}
+                                title='Ajouter un nouveau bien'
+                                buttonStyle={{ borderColor: '#F57C00', borderRadius: 20, borderWidth: 1.5, marginBottom: 10 }}
                                 titleStyle={{ color: '#F57C00' }}
-                                onPress={ () => { this._getAllEstates() }}
+                                onPress={ () => this.props.navigation.navigate('Création bien') }
                             />
                         </Fragment>
                     </ScrollView>
