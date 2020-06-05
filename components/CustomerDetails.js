@@ -1,9 +1,17 @@
 import React from 'react';
-import {ActivityIndicator, StyleSheet, Text, View, ScrollView} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View, ScrollView, TouchableOpacity, Linking} from 'react-native';
 import {API} from "../config/constants";
 import {connect} from "react-redux";
 import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faUser} from "@fortawesome/free-solid-svg-icons";
+import {
+    faEnvelope,
+    faLocationArrow,
+    faMapMarked,
+    faMapMarkedAlt, faMapMarkerAlt, faPhone, faPhoneAlt,
+    faSearchLocation,
+    faUser
+} from "@fortawesome/free-solid-svg-icons";
+import moment from "moment";
 
 class CustomerDetails extends React.Component {
     constructor(props) {
@@ -48,6 +56,7 @@ class CustomerDetails extends React.Component {
 
     render() {
         const customer = this.state.customer
+        console.log('customer',customer)
 
         return (
             <ScrollView style={styles.container}>
@@ -55,19 +64,37 @@ class CustomerDetails extends React.Component {
                 {customer && (
                     <View style={styles.profile}>
                         <View style={styles.profile_left}>
-                            <FontAwesomeIcon icon={faUser}/>
-                            <View style={styles.entry}>
-                                <Text style={styles.label}>Nom:</Text>
-                                <Text>{customer.lastname}</Text>
+                            <Text style={styles.title}>
+                                {customer.civility === '0' ? 'M. ' : 'Mme '}
+                                {customer.lastname + ' '}
+                                {customer.firstname}
+                            </Text>
+                            <Text>
+                                {customer.marital_status + ', '}
+                                {'né(e) le' + moment(new Date(customer.birthdate)).format('DD/MM/YYYY')}
+                            </Text>
+                            <View style={styles.profile_row}>
+                                <View style={styles.profileIcon}>
+                                    <FontAwesomeIcon icon={faMapMarkerAlt} size={30}/>
+                                </View>
+                                <View style={styles.profileData}>
+                                    <Text>
+                                        {customer.street}
+                                        {customer.complement && '\n'+customer.complement}
+                                    </Text>
+                                    <Text>{customer.zip_code + ' ' + customer.city}</Text>
+                                </View>
                             </View>
-                            <View style={styles.entry}>
-                                <Text style={styles.label}>Prénom:</Text>
-                                <Text>{customer.firstname}</Text>
-                            </View>
-                            <Text style={styles.title}>Adresse:</Text>
                         </View>
                         <View style={styles.profile_right}>
-
+                            <TouchableOpacity
+                                onPress={() => Linking.openURL('mailto:' + customer.mail)}>
+                                <FontAwesomeIcon icon={faEnvelope} size={30}/>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => Linking.openURL('tel:' + customer.phone)}>
+                                <FontAwesomeIcon icon={faPhone} size={30}/>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 )}
@@ -97,27 +124,39 @@ const styles=StyleSheet.create({
         height: '100%'
     },
     title: {
-        fontSize: 18,
+        fontSize: 24,
         fontWeight: 'bold',
         marginVertical: 2
     },
     profile: {
-        padding: 10,
+        paddingHorizontal: 10,
+        paddingVertical: 20,
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        backgroundColor: '#fff'
     },
     profile_left: {
         flex: 2,
     },
     profile_right: {
-        flex: 1
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center'
     },
     label: {
         width: 100,
         fontWeight: 'bold'
     },
-    entry: {
+    profile_row: {
         flexDirection: 'row',
+        marginTop: 10
+    },
+    profileIcon: {
+        width: 40,
         alignItems: 'center'
+    },
+    profileData: {
+        flex: 1
     }
 })

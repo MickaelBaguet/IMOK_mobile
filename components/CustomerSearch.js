@@ -66,7 +66,7 @@ class CustomerSearch extends React.Component {
                     <View style={styles.customerCard}>
                         <View style={styles.customerInfo}>
                             <View style={styles.row}>
-                                <Text style={styles.customerName}>{item.civility === 0 ? 'M.' : 'Mme'}</Text>
+                                <Text style={styles.customerName}>{item.civility === '0' ? 'M.' : 'Mme'}</Text>
                                 <Text style={styles.customerName}>{item.lastname}</Text>
                                 <Text style={styles.customerName}>{item.firstname}</Text>
                             </View>
