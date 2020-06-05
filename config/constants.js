@@ -18,7 +18,8 @@ export const API =  {
     customers: api_base_url + 'customers',
     customer_id: api_base_url + 'customers/',
     estateSearch : api_base_url + 'estates/search',
-    estateList : api_base_url + 'estates'
+    estateList : api_base_url + 'estates',
+    citiesSearch: api_base_url + 'cities/search/'
 }
 
 /**
