@@ -7,12 +7,16 @@ import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
 import {colors} from "../config/constants";
 import {faCalendarAlt, faHome, faUsers} from "@fortawesome/free-solid-svg-icons";
 import Logout from "../components/Logout";
+
 /** IMPORT VIEWS HERE */
 import Appointment from "../components/Appointment";
 import CustomerSearch from "../components/CustomerSearch";
 import AppointmentCreate from '../components/AppointmentCreate'
 import CustomerDetails from "../components/CustomerDetails";
 import EstateSearch from '../components/EstateSearch'
+import EstateList from "../components/EstateList";
+import EstateDetails from "../components/EstateDetails";
+import EstateCreate from "../components/EstateCreate";
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator()
@@ -62,7 +66,16 @@ const EstateStack = () => (
         <Stack.Screen
             name = 'Rechercher un bien'
             component = {EstateSearch}/>
-        {/* ADD MORE STACK SCREENS HERE*/}
+        <Stack.Screen
+            name = 'Résultat recherche'
+            component = {EstateList}/>
+        <Stack.Screen
+            name = 'Détails bien'
+            component = { EstateDetails }/>
+        <Stack.Screen
+            name = 'Création bien'
+            component = { EstateCreate }/>
+        {/* ADD MORE STACK SCREENS HERE */}
     </Stack.Navigator>
 )
 
