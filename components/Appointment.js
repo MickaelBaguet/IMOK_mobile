@@ -33,7 +33,6 @@ class Appointment extends React.Component {
                this.setState({
                 appointments: data.appointments
                })
-              // console.log(data);
            })
         }
         this.setState({
@@ -42,10 +41,40 @@ class Appointment extends React.Component {
     })
 }
 
+_displayAppointments() {
+    const appointments = this.state.appointments
+    if(appointments.length > 0) {
+        return (
+            <FlatList
+                data={appointments}
+                keyExtractor={(item) => (item.date_start + item.id_customers + item.id_employees)}
+                renderItem={({item}) => (
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.props.navigation.navigate('Details du RDV', {appointment: JSON.stringify(item)})
+                        }}>
+                        <View style={style.appointmentCard}>
+                            <View style={style.appointmentDate}>
+                                <Text style={style.label}>Date du RDV</Text>
+                                <Text>{'le ' + moment(item.date_start).format('DD/MM/YYYY à HH:mm')}</Text>
+                            </View>
+                            <View style={style.appointmentEmployee}>
+                                <Text style={style.label}>Avec:</Text>
+                                <Text>{item.employee_firstname + ' ' + item.employee_lastname}</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                )}
+            />
+        )
+    } else {
+        return (
+            <Text style={[{margin: 10}]}>Vous n'avez aucun RDV</Text>
+        )
+    }
+}
+
     render() {
-
-      // console.log(this.state.appointments);
-
           LocaleConfig.locales['fr'] = {
             monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
             monthNamesShort: ['Janv.','Févr.','Mars','Avril','Mai','Juin','Juil.','Août','Sept.','Oct.','Nov.','Déc.'],
@@ -55,15 +84,8 @@ class Appointment extends React.Component {
           };
           LocaleConfig.defaultLocale = 'fr';
         return (              
-              <View>
+            <View style={style.container}>
                   <ScrollView style={style.scrollView}>
-
-                  <TouchableOpacity onPress={()=> this._loadAppointment()}>
-                        <View style={style.button}>
-                            <Text>Rechercher</Text>
-                        </View>
-                    </TouchableOpacity>
-
                   <Calendar
                     markedDates={{
                       '2017-12-14': {
@@ -81,48 +103,18 @@ class Appointment extends React.Component {
                         ]
                       }
                     }}
-                    // Date marking style [simple/period/multi-dot/custom]. Default = 'simple'
                     markingType='multi-period'
                   />
 
-                <Text style={style.title}>Les RDV à venir</Text>
-                  
-                <FlatList
-                    data={this.state.appointments}
-                    // keyExtractor={(item) => item.id.toString()}
-                    renderItem={({item}) => (
-                            <View style={style.customerCard}>
-                                <View style={style.customerInfo}>
-                                    <View style={style.row}>
-                                        <Text style={style.customerName}>{item.date_start}</Text>
-                                        <Text style={style.customerName}>{item.id_customers}</Text>
-                                    </View>
-                                    <View style={style.row}>
-                                        <Text style={style.customerAddress}>80000</Text>
-                                        <Text style={style.customerAddress}>Amiens</Text>
-                                    </View>
-                                </View>
-                                <View style={style.contact}>
-                                    <TouchableOpacity onPress={()=> {Linking.openURL(`mailto:${item.note}`)}}>
-                                        <View>
-                                            <FontAwesomeIcon icon={faEnvelope} size={20} color={colors.primary} style={style.icon}/>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={()=> {Linking.openURL(`tel:${item.note}`)}}>
-                                        <View>
-                                            <FontAwesomeIcon icon={faPhone} size={16} color={colors.primary} style={style.icon}/>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                    )}
-                />
+                <View style={style.appointments}>
+                    <Text style={[style.title, {margin: 10}]}>RDV à venir</Text>
+                    {this._displayAppointments()}
+                </View>
 
-                <Button style={style.button}
-                    title="Ajouter un rdv"
-                    onPress={()=> {this.props.navigation.navigate('Ajouter un RDV')}}
-                />
                 </ScrollView>
+                <TouchableOpacity onPress={()=> {this.props.navigation.navigate('Ajouter un RDV')}} style={style.fab}>
+                    <Text style={style.fabIcon}>+</Text>
+                </TouchableOpacity>
               </View>
         )
     }
@@ -136,6 +128,9 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps)(Appointment)
 
 const style = StyleSheet.create({
+    container: {
+        flex: 1
+      },
     title: {
         fontSize: 25,
         fontWeight: 'bold',
@@ -178,6 +173,38 @@ const style = StyleSheet.create({
       justifyContent: 'flex-end',
   },
   icon: {
-      marginRight: 10
-  }
+      marginRight: 10,
+  },
+    appointmentCard: {
+        backgroundColor: '#fff',
+        marginVertical: 4,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        borderRadius: 2,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    appointmentDate: {
+        flex: 5
+    },
+    appointmentEmployee: {
+        flex: 2
+    },
+    fab: { 
+        position: 'absolute', 
+        width: 56, 
+        height: 56, 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        right: 20, 
+        bottom: 20, 
+        backgroundColor: '#03A9F4', 
+        borderRadius: 30, 
+        elevation: 8 
+        }, 
+        fabIcon: { 
+          fontSize: 40, 
+          color: 'white' 
+        }
 })
