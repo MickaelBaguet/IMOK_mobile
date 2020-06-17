@@ -1,11 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity,FlatList } from 'react-native';
-import { ListItem, Button } from 'react-native-elements'
-import {FontAwesomeIcon} from "@fortawesome/react-native-fontawesome";
-import {faEnvelope, faPhone} from "@fortawesome/free-solid-svg-icons";
-import {Calendar, CalendarList, Agenda, LocaleConfig} from 'react-native-calendars';
-import {API, colors} from "../config/constants";
+import {Calendar, LocaleConfig} from 'react-native-calendars';
+import {API} from "../config/constants";
 import {connect} from "react-redux";
+import moment from "moment";
+
 
 class Appointment extends React.Component {
 
@@ -17,9 +16,8 @@ class Appointment extends React.Component {
     }
 }
 
-  _loadAppointment = () => {
-    this.setState({isLoading: true})
-    fetch(API.appointments, {
+componentDidMount(){
+    fetch(API.appointmentsEmployee + this.props.user.id, {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
@@ -27,17 +25,15 @@ class Appointment extends React.Component {
             'Authorization': 'Bearer ' + this.props.auth_token,
         }
     })
-    .then((response) => {
-        if (response.status === 200) {
-           response.json().then((data)=> {
-               this.setState({
-                appointments: data.appointments
-               })
-           })
+    .then((response)=> {
+        if(response.status === 200) {
+            response.json().then((data) => {
+                this.setState({
+                    appointments: data.appointments,
+                    isLoading: false
+                })
+            })
         }
-        this.setState({
-            isLoading: false
-        })
     })
 }
 
@@ -122,7 +118,8 @@ _displayAppointments() {
 
 const mapStateToProps = (state) => {
   return {
-      auth_token: state.auth_token
+      auth_token: state.auth_token,
+      user: state.user
   }
 }
 export default connect(mapStateToProps)(Appointment)
