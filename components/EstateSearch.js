@@ -42,11 +42,7 @@ class EstateSearch extends React.Component {
             .then((response) => {
             if (response.status === 200) {
                 response.json().then((data)=> {
-                    // this.setState({
-                    //     estate: data.estate
-                    // })
                     this.props.navigation.navigate('Résultat recherche', { estatesList: data.estate })
-                    // console.log(data)
                 })
             }
             this.setState({
@@ -59,7 +55,6 @@ class EstateSearch extends React.Component {
         return (
             <Formik
                 initialValues={{ city: '', minPrice: '', maxPrice: '', minSize: '', maxSize: '' }}
-                // onSubmit={values => Alert.alert(JSON.stringify(values))}
                 onSubmit={ values => this._searchEstates(values) }
                 validationSchema={yup.object().shape({
                     city:       yup.string().required(),
